@@ -46,7 +46,7 @@
       width: 100vw;
       height: 100vh;
       object-fit: cover;
-      opacity: 0.70;
+      opacity: 0.25;
       z-index: 0;
     }
 
@@ -57,7 +57,18 @@
 
     /* RESPONSIVE HP */
     @media (max-width: 768px) {
-      h1 { font-size: 1.6em; }
+      body { overflow: hidden; }
+      h1 { font-size: 1.4em; }
+      p { font-size: 0.95em; }
+      .container {
+        justify-content: flex-start;
+        padding-top: 60px;
+      }
+      .slide img {
+        max-width: 100%;
+        max-height: 55vh;
+      }
+    }
       p { font-size: 1em; }
       .slide img {
         max-width: 95%;
@@ -204,9 +215,9 @@
     </div>
 
     <div class="controls">
-      <button onclick="playMusic()">🔊 Play Music</button>
-      <button onclick="prevSlide()">⬅ Prev</button>
-      <button onclick="nextSlide()">Next ➡</button>
+      <button onclick="prevSlide()">⬅</button>
+      <button onclick="toggleAuto()" id="autoBtn">▶ Auto</button>
+      <button onclick="nextSlide()">➡</button>
     </div>
 
   </div>
@@ -228,25 +239,26 @@
     function nextSlide() {
       slideIndex++;
       showSlide(slideIndex);
+
+    // AUTO SLIDE OPTION
+    let autoPlay = false;
+    let autoTimer = null;
+
+    function toggleAuto() {
+      autoPlay = !autoPlay;
+      const btn = document.getElementById('autoBtn');
+      if (autoPlay) {
+        btn.innerText = '⏸ Stop';
+        autoTimer = setInterval(() => {
+          slideIndex++;
+          if (slideIndex > slides.length) slideIndex = 1;
+          showSlide(slideIndex);
+        }, 5000);
+      } else {
+        btn.innerText = '▶ Auto';
+        clearInterval(autoTimer);
+      }
     }
-
-    function prevSlide() {
-      slideIndex--;
-      showSlide(slideIndex);
-    }
-
-    showSlide(slideIndex);
-
-    // PLAY MUSIC (FIX AUTOPLAY HP)
-    const bgMusic = document.getElementById('bgMusic');
-    function playMusic() {
-      bgMusic.play();
-    }
-
-    // AUTO PLAY SETELAH INTERAKSI PERTAMA
-    document.body.addEventListener('click', () => {
-      bgMusic.play();
-    }, { once: true });
 
     // LOVE EFFECT
     function createLove() {
@@ -258,7 +270,7 @@
       document.body.appendChild(love);
       setTimeout(() => love.remove(), 6000);
     }
-    setInterval(createLove, 300);
+    setInterval(createLove, 400);
 
     // STAR EFFECT
     function createStar() {
@@ -269,13 +281,9 @@
       document.body.appendChild(star);
       setTimeout(() => star.remove(), 5000);
     }
-    setInterval(createStar, 200);
+    setInterval(createStar, 300);
   </script>
 
 </body>
 </html>
-
-
-
-
 
