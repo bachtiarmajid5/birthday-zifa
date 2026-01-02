@@ -101,14 +101,14 @@ p {
 /* CONTROLS */
 .controls {
   position: fixed;
-  bottom: env(safe-area-inset-bottom, 20px);
+  bottom: calc(env(safe-area-inset-bottom, 20px) + 35px);
   left: 50%;
   transform: translateX(-50%);
   display: flex;
   gap: 12px;
   z-index: 3;
 }
-
+  
 .controls button {
   padding: 12px 22px;
   font-size: 16px;
@@ -224,3 +224,4 @@ document.body.addEventListener('click', () => {
 
 </body>
 </html>
+
