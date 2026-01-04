@@ -121,14 +121,11 @@ p {
 
 audio { display: none; }
 
-/* LAPTOP OPTIMIZATION */
+/* LAPTOP */
 @media (min-width: 1024px) {
   .slide img {
     max-width: 450px;
     max-height: 65vh;
-  }
-  .bg-video {
-    opacity: 0.7;
   }
 }
 </style>
@@ -155,12 +152,15 @@ audio { display: none; }
   </div>
 
   <div class="slide"><img src="foto1.jpg"><p>Hari ini adalah hari spesialmu 🤍</p></div>
-  <div class="slide"><img src="foto2.jpg"><p>Terima kasih sudah hadir didalam hidupku dan menjadi motivatorku ✨</p></div>
+  <div class="slide"><img src="foto2.jpg"><p>Terima kasih sudah hadir di hidupku ✨</p></div>
   <div class="slide"><img src="foto3.jpg"><p>Senyummu selalu membuatku bahagia ☺️</p></div>
   <div class="slide"><img src="foto4.jpg"><p>Semoga semua mimpimu tercapai 🌷</p></div>
-  <div class="slide"><p>Sayang aku gabisa buat kata kata yang bagus. 
-    Jadi intinya aku mau ngucapin Selamat Ulang Tahun Sayang
-    semoga semua harapankamu bisa terkabul semua dan kamu tetap  sehat selalu supaya tetep bisa disisiku dan menyemangati aku terus 🌸</p></div>
+
+  <div class="slide">
+    <p>Sayang aku gabisa buat kata kata yang bagus.  
+    Tapi intinya aku mau ngucapin Selamat Ulang Tahun Sayang 🤍  
+    Semoga semua harapanmu terkabul dan kamu selalu sehat supaya tetap di sisiku 🌸</p>
+  </div>
 
   <div class="slide">
     <h1 class="fade-love">ilopyuu.....❤️</h1>
@@ -190,19 +190,39 @@ function showSlide(n) {
   slides[slideIndex - 1].style.display = 'block';
 }
 
-function nextSlide() { slideIndex++; showSlide(slideIndex); }
-function prevSlide() { slideIndex--; showSlide(slideIndex); }
+/* AUTO STOP */
+function stopAuto() {
+  if (isAuto) {
+    clearInterval(autoTimer);
+    autoTimer = null;
+    isAuto = false;
+    document.getElementById('autoBtn').innerText = '▶ Auto';
+  }
+}
+
+function nextSlide() {
+  stopAuto();
+  slideIndex++;
+  showSlide(slideIndex);
+}
+
+function prevSlide() {
+  stopAuto();
+  slideIndex--;
+  showSlide(slideIndex);
+}
 
 function toggleAuto() {
   const btn = document.getElementById('autoBtn');
   if (!isAuto) {
-    autoTimer = setInterval(nextSlide, 8000);
+    autoTimer = setInterval(() => {
+      slideIndex++;
+      showSlide(slideIndex);
+    }, 8000);
     btn.innerText = '⏸ Stop';
     isAuto = true;
   } else {
-    clearInterval(autoTimer);
-    btn.innerText = '▶ Auto';
-    isAuto = false;
+    stopAuto();
   }
 }
 
@@ -219,7 +239,17 @@ setInterval(() => {
   setTimeout(() => love.remove(), 6000);
 }, 450);
 
-/* MUSIC PLAY AFTER TOUCH (IPHONE SAFE) */
+/* KEYBOARD CONTROL */
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight') nextSlide();
+  if (e.key === 'ArrowLeft') prevSlide();
+  if (e.code === 'Space') {
+    e.preventDefault();
+    toggleAuto();
+  }
+});
+
+/* MUSIC AFTER TOUCH */
 document.body.addEventListener('click', () => {
   document.getElementById('bgMusic').play();
 }, { once: true });
@@ -227,77 +257,3 @@ document.body.addEventListener('click', () => {
 
 </body>
 </html>
-
-<script>
-/* ===============================
-   AUTO PAUSE ON MANUAL CONTROL
-   (PLUG & PLAY)
-================================ */
-
-(function () {
-
-  // --- STOP AUTO FUNCTION ---
-  function stopAutoSafe() {
-    if (typeof isAuto !== 'undefined' && isAuto) {
-      clearInterval(autoTimer);
-      autoTimer = null;
-      isAuto = false;
-
-      const btn = document.getElementById('autoBtn');
-      if (btn) btn.innerText = '▶ Auto';
-    }
-  }
-
-  // --- OVERRIDE NEXT & PREV (WITHOUT EDIT ORIGINAL) ---
-  const _nextSlide = window.nextSlide;
-  const _prevSlide = window.prevSlide;
-
-  window.nextSlide = function () {
-    stopAutoSafe();
-    if (typeof _nextSlide === 'function') _nextSlide();
-  };
-
-  window.prevSlide = function () {
-    stopAutoSafe();
-    if (typeof _prevSlide === 'function') _prevSlide();
-  };
-
-  // --- KEYBOARD CONTROL ---
-  document.addEventListener('keydown', function (e) {
-
-    if (e.key === 'ArrowRight') {
-      stopAutoSafe();
-      _nextSlide();
-    }
-
-    if (e.key === 'ArrowLeft') {
-      stopAutoSafe();
-      _prevSlide();
-    }
-
-    if (e.code === 'Space') {
-      e.preventDefault();
-      if (typeof toggleAuto === 'function') toggleAuto();
-    }
-
-  });
-
-})();
-</script>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
